@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Checker</title>
+    <style>
+        body {
+            font-family: Proxima Nova, sans-serif;
+            background-color: #f4f4f4;
+            color: #7393B3;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 102vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        input[type="password"], button {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .validation-result {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .validation-result span {
+            display: block;
+            padding: 5px;
+        }
+
+        .valid {
+            color: green;
+        }
+
+        .invalid {
+            color: red;
+        }
+
+        .valid-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .valid .valid-indicator {
+            background-color: green;
+        }
+
+        .invalid .valid-indicator {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Password Checker</h1>
+        <input type="password" id="password" placeholder="Enter your password">
+        <button onclick="validatePassword()">Check Password</button>
+        <div class="validation-result" id="validation-result"></div>
+    </div>
+
+    <script>
+        function validatePassword() {
+            const password = document.getElementById('password').value;
+            const resultElement = document.getElementById('validation-result');
+
+            // Criteria
+            const minLength = 8;
+            const specialCharacters = "!@#$%^&*()_+-=[]{}|;:',.<>?/~`";
+
+            // Initialize criteria status
+            const lengthValid = password.length >= minLength;
+            const hasUpper = /[A-Z]/.test(password);
+            const hasLower = /[a-z]/.test(password);
+            const hasDigit = /\d/.test(password);
+            const hasSpecial = new RegExp(`[${specialCharacters.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}]`).test(password);
+
+            // Overall validation
+            const isValid = lengthValid && hasUpper && hasLower && hasDigit && hasSpecial;
+
+            // Clear previous results
+            resultElement.innerHTML = '';
+
+            // Show validation results
+            resultElement.innerHTML += createValidationMessage('Minimum length of 8 characters', lengthValid);
+            resultElement.innerHTML += createValidationMessage('Contains an uppercase letter', hasUpper);
+            resultElement.innerHTML += createValidationMessage('Contains a lowercase letter', hasLower);
+            resultElement.innerHTML += createValidationMessage('Contains a digit', hasDigit);
+            resultElement.innerHTML += createValidationMessage('Contains a special character', hasSpecial);
+
+            if (isValid) {
+                alert('Password is strong.');
+            } else {
+                alert('Password is weak. Please check the criteria.');
+            }
+        }
+
+        function createValidationMessage(message, isValid) {
+            return `
+                <span class="${isValid ? 'valid' : 'invalid'}">
+                    <span class="valid-indicator"></span>${message}
+                </span>
+            `;
+        }
+    </script>
+</body>
+</html>
+
